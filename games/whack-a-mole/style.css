@@ -1,0 +1,370 @@
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #075a7d, #86fdff);
+    background-attachment: fixed;
+    color: #222;
+    text-align: center;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 50px;
+}
+
+#game-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.screen {
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    transform: translate(-50%, -50%) scale(1);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+.hidden {
+    opacity: 0;
+    display: none;
+}
+
+button {
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #ff8e53, #ff6b6b);
+    transform: scale(1.1);
+}
+
+#grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.cell {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(145deg, #ffffff, #dad5d5);
+    border: 3px solid #3136ba;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.cell img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+#lives {
+    color: #d11515;
+    font-weight: bold;
+    font-size: 1.4em;
+    min-height: 5px;
+}
+
+#info {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+/* Анимации */
+/* Анимации появления крота и сердца */
+@keyframes mole-spawn {
+    0% {
+        opacity: 0.2;
+        transform: translateY(100%) scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0%) scale(1);
+    }
+}
+
+@keyframes heart-spawn {
+    0% {
+        opacity: 0.5;
+        transform:scale(0.2);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.mole {
+    animation: mole-spawn 0.25s ease-in-out;
+}
+
+.heart {
+    animation: heart-spawn 0.25s ease;
+}
+
+@keyframes blinkAnimation {
+    0% { opacity: 1; }
+    50% { opacity: 0.3;}
+    100% { opacity: 1; }
+}
+
+.blink {
+    animation: blinkAnimation 0.3s ease-in-out 3;
+}
+
+@keyframes mole-hide {
+    0% { opacity: 1; transform: translateY(0);}
+    100% { opacity: 0; transform: translateY(100%);}
+}
+
+.mole-hide {
+    animation: mole-hide 0.25s ease-in-out forwards;
+}
+
+@keyframes mole-hit {
+    0% {transform: scale(1); opacity: 1;}
+    30% {transform: scale(0.6) rotate(90deg); opacity: .7;}
+    60% {transform: scale(0.3) rotate(180deg); opacity: .5;}
+    80% {transform: scale(0.1) rotate(360deg); opacity: .3;}
+    100% {transform: scale(0) rotate(720deg); opacity: 0;}
+}
+
+.mole-hit {
+    animation: mole-hit 0.3s ease-in-out forwards;
+}
+
+@keyframes heart-blink {
+    0%, 100% {opacity: .2; transform: scale(.5);}
+    50% {opacity: 1; transform: scale(1);}
+}
+
+.heart-blink {
+    animation: heart-blink 0.5s ease-in-out forwards;
+}
+
+@keyframes heart-glow {
+    0%, 50%, 80% { filter: brightness(1); transform: scale(1);}
+    30%, 70%, 100% { filter: brightness(2); transform: scale(.8);}
+}
+
+.heart-glow {
+    animation: heart-glow 0.5s ease-in-out forwards;
+}
+
+       /* Memory game*/
+/* 📱 Маленькие экраны: телефоны */
+@media (max-width: 600px) {
+    .container {
+        padding: 20px 10px;
+    }
+
+    #game-board {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        max-width: 100%;
+    }
+
+    .card {
+        width: 60px;
+        height: 60px;
+        font-size: 1em;
+    }
+
+    #start-btn, #close-modal {
+        font-size: 0.9em;
+        padding: 8px 16px;
+    }
+
+    #timer {
+        font-size: 16px;
+    }
+
+    .modal-content {
+        padding: 15px;
+    }
+
+    .modal-content h2 {
+        font-size: 20px;
+    }
+
+    .modal-content p {
+        font-size: 16px;
+    }
+}
+
+/* 💊 Средние экраны: планшеты */
+@media (min-width: 601px) and (max-width: 1024px) {
+    #game-board {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 10px;
+    }
+
+    .card {
+        width: 70px;
+        height: 70px;
+        font-size: 1.1em;
+    }
+}
+
+
+
+       /* Сайт-визитка*/
+/* Для планшетов и экранов до 768px */
+@media (max-width: 768px) {
+
+  body {
+    padding-top: 20px;
+  }
+  .container {
+    width: 90%;
+    border-width: 5px;
+  }
+
+  header {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .title-block,
+  .userpic {
+    width: 100%;
+    height: 100px;
+    margin: 0;
+  }
+
+  nav ul {
+    flex-direction: column;
+  }
+
+  nav li a {
+    border-right: none;
+    border-bottom: 1px solid rgb(209, 203, 203);
+    justify-content: center;
+  }
+
+  .content-wrapper {
+    flex-direction: column;
+  }
+
+  .content,
+  .sidebar {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .footer-wrapper {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-social {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+/* Для телефонов до 480px */
+@media (max-width: 480px) {
+  .title-block {
+    font-size: 20px;
+  }
+
+  h3 {
+    font-size: 18px;
+  }
+
+  nav li a {
+    padding: 15px;
+    font-size: 0.9em;
+  }
+
+  #toggle-button {
+    font-size: 0.9em;
+    padding: 8px 16px;
+  }
+
+  .footer-logo {
+    font-size: 1.2em;
+  }
+
+  .social-btn img {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+        /*whack a mole*/
+/* Медиа-запрос для планшетов */
+  @media (max-width: 768px) {
+    .cell {
+      width: 70px;
+      height: 70px;
+    }
+  
+    button {
+      font-size: 14px;
+      padding: 10px 20px;
+    }
+  
+    #info {
+      font-size: 1em;
+    }
+  
+    #lives {
+      font-size: 1.2em;
+    }
+  
+    #game-container {
+      max-width: 90vw;
+    }
+  }
+  
+  /* Медиа-запрос для телефонов */
+  @media (max-width: 480px) {
+    .cell {
+      width: 55px;
+      height: 55px;
+    }
+  
+    button {
+      font-size: 12px;
+      padding: 8px 16px;
+    }
+  
+    .screen {
+      padding: 15px;
+    }
+  
+    #info {
+      font-size: 0.9em;
+    }
+  
+    #lives {
+      font-size: 1em;
+    }
+  
+    #grid {
+      gap: 6px;
+    }
+  }

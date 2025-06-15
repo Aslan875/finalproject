@@ -1,5 +1,6 @@
 let intervalId = null;
 const scoreEl = document.getElementById('score');
+const recordEl = document.getElementById('record')
 const overlay = document.getElementById('overlay')
 const board = document.querySelector('canvas');
 
@@ -10,6 +11,16 @@ board.height = size * cols;
 
 const c = board.getContext('2d');
 let gameRunning = false;
+let directionChanged = false;
+let highScore = +(localStorage.getItem('snakeRecord')) || 1;
+recordEl.textContent = `Record: ${highScore}`;
+const gameSpeed = window.innerWidth < 900 ? 160 : 80;
+
+const touch = {
+    startX: 0,
+    startY: 0
+}
+
 const snake = {
     body: [{
         x: Math.floor(rows/2) * size,
@@ -20,19 +31,24 @@ const snake = {
 };
 
 const food = {
-    x: null,
-    y: null,
+    x: undefined,
+    y: undefined,
     placeFood: function() {
-        this.x = Math.floor(1 + Math.random() * (rows - 2)) * size;
-        this.y = Math.floor(1 + Math.random() * (cols - 2)) * size;
-        
+        let valid = true;
+
+        while(valid) {
+            this.x = Math.floor(1 + Math.random() * (rows - 2)) * size;
+            this.y = Math.floor(1 + Math.random() * (cols - 2)) * size;
+
+            valid = snake.body.some(seg => seg.x == this.x && seg.y == this.y)
+        }
     }
 };
 
 function startGame() {
     resetGame();
     food.placeFood();
-    intervalId = setInterval(draw, 100);
+    intervalId = setInterval(draw, gameSpeed);
     overlay.classList.remove('show');
     gameRunning = true;
 }
@@ -49,12 +65,17 @@ function resetGame() {
 
 function updateScore() {
     scoreEl.textContent = `Score: ${snake.length}`;
+    if (snake.length > highScore && !gameRunning) {
+        highScore = snake.length;
+        localStorage.setItem('snakeRecord', highScore);
+    }
+    recordEl.textContent = `Record: ${highScore}`;
 }
 
 function draw() {
     // Очистка поля
+    directionChanged = false;
     c.clearRect(0, 0, board.width, board.height);
-
     //Рисуем еду
     c.fillStyle = 'red';
     c.fillRect(food.x, food.y, size, size);
@@ -114,7 +135,14 @@ function gameOver() {
     overlay.innerHTML = `GAME OVER<br><span class="small">Press Space</span>`;
     overlay.classList.add('show');
     gameRunning = false;
+    updateScore();
 }
+
+board.addEventListener('touchstart', () => {
+    if(gameRunning) return;
+    const eventStart = new KeyboardEvent('keydown', {key:' ', code:'Space'});
+    document.dispatchEvent(eventStart);
+});
 
 document.addEventListener('keydown', function(e){
 const dir = snake.direction;
@@ -123,17 +151,23 @@ if(!gameRunning && e.code == 'Space') {
     startGame();
 }
 
+    if(directionChanged) return;
+
 if ((e.key == 'ArrowUp' || e.key == 'w') && dir.dy != 1) {
     dir.dx = 0;
     dir.dy = -1;
+    directionChanged = true;
 } else if ((e.key == 'ArrowDown' || e.key == 's') && dir.dy != -1){
     dir.dx = 0;
     dir.dy = 1;
+    directionChanged = true;
 } else if ((e.key == 'ArrowLeft' || e.key == 'a') && dir.dx != 1){
     dir.dx = -1;
     dir.dy = 0;
+    directionChanged = true;
 } else if ((e.key == 'ArrowRight' || e.key == 'd') && dir.dx != -1){
     dir.dx = 1;
     dir.dy = 0;
+    directionChanged = true;
 }
 });

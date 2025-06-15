@@ -1,21 +1,25 @@
 const MIN_NUMBER = 1,
       MAX_NUMBER = 100;
 
+let highScore = localStorage.getItem('guessNumberRecord') || Infinity;
 let answer;
 let attempts = 0;
 
-const guessInput = document.getElementById("guess-input"),
-      submitGuess = document.getElementById("submit-guess"),
-      feedback = document.getElementById("feedback"),
-      hint = document.getElementById("hint"),
-      attemptsDisplay = document.getElementById("attempts"),
-      newGame = document.getElementById("new-game");
+const guessInput = document.getElementById('guess-input'),
+      submitGuess = document.getElementById('submit-guess'),
+      feedback = document.getElementById('feedback'),
+      hint = document.getElementById('hint'),
+      attemptsDisplay = document.getElementById('attempts'),
+      newGame = document.getElementById('new-game');
+      recordEl = document.getElementById('record')
+      guessInput.disabled = true;
 
-guessInput.disabled = true;
+if(highScore != Infinity) {
+    recordEl.textContent = `Record: ${highScore}`;
+}
 
 newGame.addEventListener('click', function(){
     answer = parseInt((Math.random() * (MAX_NUMBER - MIN_NUMBER) + 1));
-    console.log(answer);
     guessInput.disabled = false;
     newGame.classList.toggle("hidden");
     submitGuess.classList.toggle("hidden");
@@ -33,7 +37,6 @@ function checkGuess () {
     if(isNaN(userGuess) || userGuess < MIN_NUMBER || userGuess > MAX_NUMBER) {
         feedback.textContent = "Enter correct number!";
         hint.textContent = "";
-        console.log(userGuess, answer);
         return;
     }
     attempts++;
@@ -46,6 +49,12 @@ function checkGuess () {
         submitGuess.classList.toggle("hidden");
         newGame.classList.toggle("hidden");
         guessInput.disabled = true;
+
+        if(attempts < highScore) {
+            highScore = attempts
+            localStorage.setItem('guessNumberRecord', highScore);
+                recordEl.textContent = `Record: ${highScore}`;
+        }
     } else if (userGuess > answer) {
         feedback.textContent = "";
         hint.textContent = "Number is smaller!";

@@ -4,11 +4,24 @@ body {
     font-family: "Luckiest Guy", "Arial", cursive;
     font-weight: 400;
     font-style: normal;
-
+    margin: 0;
+    padding: 0;
     background-color: #f0f8ff;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+}
+
+#record {
+    color: #333;
+    font-size: 2rem;
+    text-shadow: 0 0 20px rgba(184, 183, 183, 0.3);
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    padding: 10px 20px;
+    position: fixed;
+    bottom: 20px;
 }
 
 .container {
@@ -16,8 +29,11 @@ body {
 }
 
 h1 {
-    font-size: 3rem;
+    font-size: 2rem;
     color: #333;
+    text-shadow: 0 0 20px rgba(184, 183, 183, 0.3);
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
 }
 
 .game-box {

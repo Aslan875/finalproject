@@ -144,7 +144,7 @@ function simulateKey(key) {
     document.dispatchEvent(eventKey);
 }
 
-document.addEventListener('touchstart', e=> {
+board.addEventListener('touchstart', e=> {
     const startTouch = e.touches[0];
     touch.startX = startTouch.clientX;
     touch.startY = startTouch.clientY;
@@ -164,7 +164,7 @@ board.addEventListener('touchend', e=> {
     }
 });
 
-board.addEventListener('touchstart', () => {
+document.addEventListener('touchstart', () => {
     if(gameRunning) return;
     const eventStart = new KeyboardEvent('keydown', {key:' ', code:'Space'});
     document.dispatchEvent(eventStart);

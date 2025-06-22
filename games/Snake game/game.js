@@ -138,6 +138,31 @@ function gameOver() {
     updateScore();
 }
 
+function simulateKey(key) {
+    const eventKey = new KeyboardEvent('keydown', { key });
+    document.dispatchEvent(eventKey);
+}
+
+board.addEventListener('touchstart', e=> {
+    const startTouch = e.touches[0];
+    touch.startX = startTouch.clientX;
+    touch.startY = startTouch.clientY;
+});
+
+board.addEventListener('touchend', e=> {
+    const endTouch = e.changedTouches[0];
+    const swipeX = touch.startX - endTouch.clientX
+    const swipeY = touch.startY - endTouch.clientY
+
+    if (Math.abs(swipeX) > Math.abs(swipeY)) {
+        if(swipeX > 20) simulateKey('ArrowLeft');
+        else if (swipeX < -20) simulateKey('ArrowRight');
+    } else {
+        if (swipeY > 20) simulateKey('ArrowUp');
+        else if (swipeY < -20) simulateKey('ArrowDown')
+    }
+});
+
 board.addEventListener('touchstart', () => {
     if(gameRunning) return;
     const eventStart = new KeyboardEvent('keydown', {key:' ', code:'Space'});

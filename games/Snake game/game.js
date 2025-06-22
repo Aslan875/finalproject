@@ -4,10 +4,11 @@ const recordEl = document.getElementById('record')
 const overlay = document.getElementById('overlay')
 const board = document.querySelector('canvas');
 
-const size = 25, rows = 30, cols = 20;
-board.width = size * rows;
-board.height = size * cols;
-
+const size = 25;
+const rows = Math.floor((window.innerWidth - 50)/size);
+      cols = Math.floor((window.innerHeight - 100)/size);
+board.width = rows * size;
+board.height = cols * size;
 
 const c = board.getContext('2d');
 let gameRunning = false;
